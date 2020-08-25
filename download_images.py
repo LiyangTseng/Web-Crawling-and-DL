@@ -2,17 +2,20 @@ from selenium import webdriver
 import time
 import urllib.request 
 import os
+import sys
 
-keywords = ["wearing_mask", "wearing_medical_masks","戴口罩"]
+keywords = sys.argv[1:] 
 query_keys = [key.replace('_','+') for key in keywords]
-# 紀錄下載過的圖片網址，避免重複下載  
 
+
+# 紀錄下載過的圖片網址，避免重複下載  
 img_url_dic = {}  #maps {image_urls: ' '}
- 
-stored_url_datapath = os.path.join(os.getcwd(), "used_url.txt")
+img_url_dic_file = "used_url.txt" 
+stored_url_datapath = os.path.join(os.getcwd(), img_url_dic_file)
 if os.path.exists(stored_url_datapath):
-    with open("used_url.txt", "r") as data:
+    with open(img_url_dic_file, "r") as data:
         img_url_dic = {d:"" for d in data.read().splitlines()}
+
 
 images_folder = os.path.join(os.getcwd(), "images")
 
@@ -46,7 +49,7 @@ for index in range(0, len(keywords)):
         
         counter = 0
         while (counter < 10):
-            xpath = '/html/body/div[2]/div[2]/ul/li['+str(m+2)+']/div/a[1]/img'
+            xpath = '/html/body/div[2]/div[2]/ul/li['+str(m+1)+']/div/a[1]/img'
             try:
                 valid_xpath = False
                 for element in driver.find_elements_by_xpath(xpath):
@@ -60,17 +63,18 @@ for index in range(0, len(keywords)):
                         
                     # 保存圖片到指定路徑
                     elif img_url != None:
-                        img_url_dic[img_url] = ''  
+                        counter += 1
                         m += 1
+                        img_url_dic[img_url] = ''  
                         # print(img_url)
                         ext = img_url.split('/')[-1]
                         # print(ext)
-                        filename = keywords[index] + '_' + str(m) + '_' + ext +'.jpg'
-                        print('storing ' + filename + ' to ' + local_path + ', ' + str(counter) + ' images saved')
+                        filename = keywords[index] + '_'+ ext +'.jpg'
+                        print('storing ' + filename + ' to ' + local_path + ', ' + str(i*10+counter) + ' images saved')
 
                         # 保存圖片
                         urllib.request.urlretrieve(img_url, os.path.join(local_path , filename)) 
-                        counter += 1
+                        
 
                 if valid_xpath == False:
                     m += 1
