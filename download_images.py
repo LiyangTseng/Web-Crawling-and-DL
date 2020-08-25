@@ -29,7 +29,7 @@ for index in range(0, len(keywords)):
     # 爬取頁面網址 
     url = 'https://pic.sogou.com/pics?query=' + query_keys[index] + '&w=05009900'
     # 啟動chrome瀏覽器
-    chrome_path = "/home/daniel/Documents/chromedriver" #chromedriver.exe執行檔所存在的路徑
+    chrome_path = "./chromedriver" #chromedriver.exe執行檔所存在的路徑
     driver = webdriver.Chrome(chrome_path) 
 
     # 最大化窗口，因為每一次爬取只能看到視窗内的圖片  
